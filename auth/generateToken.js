@@ -1,7 +1,5 @@
-require('dotenv').config();
 const jwt = require('jsonwebtoken');
-
-const secret = process.env.JWT_SECRET || 'secret';
+const secret = require('../config/secrets').jwtSecret;
 
 const generateToken = (user) => {
   const payload = {
@@ -17,6 +15,5 @@ const generateToken = (user) => {
 };
 
 module.exports = {
-  generateToken,
-  secret
+  generateToken
 };
