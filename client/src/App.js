@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Route, NavLink } from 'react-router-dom';
+import { Route, NavLink, withRouter } from 'react-router-dom';
 
 import Reset from './components/Reset';
 import Login from './containers/Login';
@@ -14,6 +14,10 @@ const AppWrapper = styled.div`
 `;
 
 const App = () => {
+  const logout = () => {
+    localStorage.removeItem('token');
+    this.props.history.push('/login');
+  }
   return (
     <AppWrapper>
       <Reset />
@@ -21,6 +25,7 @@ const App = () => {
         <nav>
           <NavLink to="/login">Login</NavLink>
           <NavLink to="/users">Users</NavLink>
+          <button onClick={logout}>Logout</button>
         </nav>
       </header>
       <main>
@@ -32,4 +37,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default withRouter(App);
