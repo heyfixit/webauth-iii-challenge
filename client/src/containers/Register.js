@@ -1,37 +1,35 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
-export default props => {
-  const [info, setInfo] = useState({ username: '', password: '' });
-  const [redirectReferrer, setRedirectReferrer] = useState(false);
-  const { from } = props.location.state || { from: { pathname: '/' } };
+export default withRouter(({ history }) => {
+  const [info, setInfo] = useState({
+    username: '',
+    password: '',
+    department: ''
+  });
 
   const handleInputChange = e => {
     const { name, value } = e.target;
     setInfo({ ...info, [name]: value });
   };
 
-  const handleLogin = e => {
+  const handleRegister = e => {
     e.preventDefault();
-    const endpoint = 'http://localhost:5000/api/auth/login';
+    const endpoint = 'http://localhost:5000/api/auth/register';
     axios
       .post(endpoint, info)
       .then(res => {
         localStorage.setItem('token', res.data.token);
-        setRedirectReferrer(true);
+        history.push('/users');
       })
       .catch(err => console.error(err));
   };
 
-  if (redirectReferrer) {
-    return <Redirect to={from} />;
-  }
-
   return (
     <>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
+      <h2>Register</h2>
+      <form onSubmit={handleRegister}>
         <div>
           <label htmlFor="username">Username</label>
           <input
@@ -53,9 +51,20 @@ export default props => {
           />
         </div>
         <div>
-          <button type="submit">Login</button>
+          <label htmlFor="department">Department</label>
+          <input
+            id="department"
+            name="department"
+            value={info.department}
+            onChange={handleInputChange}
+            placeholder="department"
+          />
+        </div>
+        <div>
+          <button type="submit">Register</button>
         </div>
       </form>
     </>
   );
-};
+});
+
