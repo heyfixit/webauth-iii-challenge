@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import requiresAuth from '../components/requiresAuth';
 
-export default () => {
+export default requiresAuth(() => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    const endpoint = 'http://localhost:5000/api/restricted/users';
-    const token = localStorage.getItem('token');
-    const reqOptions = {
-      headers: {
-        authorization: token
-      }
-    };
-    axios.get(endpoint, reqOptions).then(res => {
+    const endpoint = '/restricted/users';
+
+    axios.get(endpoint).then(res => {
       setUsers(res.data);
     });
   }, []);
@@ -22,9 +18,12 @@ export default () => {
       <h2>List of Users</h2>
       <ul>
         {users.map(u => (
-          <li key={u.id}>{u.username}</li>
+          <li key={u.id}>
+            <div>{u.username}</div>
+            <div>{u.department}</div>
+          </li>
         ))}
       </ul>
     </>
   );
-};
+});
