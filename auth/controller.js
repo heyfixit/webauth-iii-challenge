@@ -9,15 +9,22 @@ const router = express.Router();
 router.post('/register', (req, res) => {
   const user = req.body;
 
-  user.password = bcrypt.hashSync(user.password, 8);
+  if (user.username && user.password && user.department) {
+    user.password = bcrypt.hashSync(user.password, 8);
+    const token = generateToken(user);
 
-  Users.insert(user)
-    .then(saved => {
-      res.status(201).json(saved);
-    })
-    .catch(error => {
-      res.status(500).json(error);
-    });
+    Users.insert(user)
+      .then(saved => {
+        res.status(201).json({ ...saved, token });
+      })
+      .catch(error => {
+        res.status(500).json(error);
+      });
+  } else {
+    req
+      .status(401)
+      .json({ message: 'Please provide username, department, and password' });
+  }
 });
 
 router.post('/login', (req, res) => {
